@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 
 @Component
-public class HealthApi implements Supplier<APIGatewayProxyResponseEvent>{
+public class HealthApi implements Supplier<Object>{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HealthApi.class);
 

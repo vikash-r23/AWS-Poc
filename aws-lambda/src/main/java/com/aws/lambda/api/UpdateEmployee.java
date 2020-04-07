@@ -7,14 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.aws.lambda.entity.Employee;
 import com.aws.lambda.service.EmployeeService;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class UpdateEmployee implements Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class UpdateEmployee implements Function<Object, Employee> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateEmployee.class);
 
@@ -22,15 +20,12 @@ public class UpdateEmployee implements Function<APIGatewayProxyRequestEvent, API
 	EmployeeService service;
 
 	@Override
-	public APIGatewayProxyResponseEvent apply(APIGatewayProxyRequestEvent request) {
-		LOGGER.info("com.aws.lambda.api.UpdateEmployee Function Invoked");
-		Gson gson = new Gson();
-		Employee emp = gson.fromJson(request.getBody(), Employee.class);
+	public Employee apply(Object request) {
+		LOGGER.info("com.aws.lambda.api.UpdateEmployee Function Invoked With Request Body => {}", request);
+		Employee emp = new ObjectMapper().convertValue(request, Employee.class);
 		emp = service.update(emp);
-		APIGatewayProxyResponseEvent reponse = new APIGatewayProxyResponseEvent();
-		reponse.setStatusCode(200);
-		reponse.setBody(gson.toJson(emp));
-		return reponse;
+		LOGGER.info("com.aws.lambda.api.UpdateEmployee Function Completed");
+		return emp;
 	}
 
 }

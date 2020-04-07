@@ -7,11 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.aws.lambda.service.EmployeeService;
 
 @Component
-public class DeleteEmployee implements Consumer<APIGatewayProxyRequestEvent> {
+public class DeleteEmployee implements Consumer<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DeleteEmployee.class);
 
@@ -19,10 +18,10 @@ public class DeleteEmployee implements Consumer<APIGatewayProxyRequestEvent> {
 	EmployeeService service;
 
 	@Override
-	public void accept(APIGatewayProxyRequestEvent request) {
-		LOGGER.info("com.aws.lambda.api.DeleteEmployee Function Invoked");
-		long id = Long.valueOf(request.getBody());
-		service.delete(id);
+	public void accept(String id) {
+		LOGGER.info("com.aws.lambda.api.DeleteEmployee Function Invoked With Request Body => {}",id);
+		long empId = Long.valueOf(id);
+		service.delete(empId);
 		LOGGER.info("com.aws.lambda.api.DeleteEmployee Function Completed");
 	}
 
